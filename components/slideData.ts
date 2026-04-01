@@ -1,7 +1,7 @@
 // ─── SLIDES 1–5: Neuroscience Fundamentals (unchanged) ───────────────────────
 
 export const NEURO_STATS = [
-  { n: '86B',     label: 'Neurons',       back: '69 billion are in the cerebellum alone. Only ~16 billion reside in the cerebral cortex.' },
+  { n: '86B',     label: 'Neurons',       back: 'Over 80% of all neurons live in the cerebellum. Only ~16 billion reside in the cerebral cortex — the seat of thought.' },
   { n: '100T',    label: 'Synapses',      back: 'Each neuron forms ~7,000 connections on average — more than all stars in the Milky Way.' },
   { n: '120 m/s', label: 'Signal Speed',  back: 'Myelinated axons fire at 120 m/s. Unmyelinated axons travel at just 0.5 m/s.' },
   { n: '20 W',    label: 'Brain Power',   back: 'The brain is 2% of body weight but consumes 20% of the body\'s total energy.' },
