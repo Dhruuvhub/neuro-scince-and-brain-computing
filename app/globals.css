@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens ──────────────────────────────────────────── */
+:root { --radius: 1rem; }
+
+/* ─── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #000;
+}
+
+::-webkit-scrollbar { display: none; }
+html { scrollbar-width: none; }
+
+/* ════════════════════════════════════════════════════════════════
+   LIQUID GLASS — inside layer (base styles only, no hover)
+   ════════════════════════════════════════════════════════════════ */
+@layer components {
+  .liquid-glass {
+    background: rgba(255,255,255,0.01);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.10);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass::before {
+    content: ''; position: absolute; inset: 0; padding: 1.4px;
+    border-radius: inherit;
+    background: linear-gradient(180deg,
+      rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%,
+      transparent 40%, transparent 60%,
+      rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .liquid-glass-strong {
+    background: rgba(255,255,255,0.01);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    box-shadow: 4px 4px 4px rgba(0,0,0,0.05), inset 0 1px 1px rgba(255,255,255,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass-strong::before {
+    content: ''; position: absolute; inset: 0; padding: 1.4px;
+    border-radius: inherit;
+    background: linear-gradient(180deg,
+      rgba(255,255,255,0.50) 0%, rgba(255,255,255,0.20) 20%,
+      transparent 40%, transparent 60%,
+      rgba(255,255,255,0.20) 80%, rgba(255,255,255,0.50) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   KEYFRAME ANIMATIONS  (outside layer — never gets purged)
+   ════════════════════════════════════════════════════════════════ */
+@keyframes shimmerSweep {
+  0%   { left: -70%; }
+  100% { left: 130%; }
+}
+
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0   rgba(74,222,128,0.7); }
+  70%  { box-shadow: 0 0 0 8px rgba(74,222,128,0);   }
+  100% { box-shadow: 0 0 0 0   rgba(74,222,128,0);   }
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-8px); }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   HOVER & ANIMATION CLASSES  (outside layer — highest priority)
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Floating (cover button) ─────────────────────────────────── */
+.float {
+  animation: floatY 3.6s ease-in-out infinite;
+}
+
+/* ── Pulsing dot (timeline) ──────────────────────────────────── */
+.pulse-dot {
+  animation: pulseRing 2s ease-out infinite;
+}
+
+/* ── Green glow on flip-card container ───────────────────────── */
+.glow-hover {
+  transition: box-shadow 0.35s ease;
+}
+.glow-hover:hover {
+  box-shadow:
+    0 0 0 1.5px rgba(74, 222, 128, 0.35),
+    0 0 24px  rgba(74, 222, 128, 0.25),
+    0 0 60px  rgba(74, 222, 128, 0.12) !important;
+}
+
+/* ── Card lift + glow (regular non-flip cards) ───────────────── */
+.card-hover {
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1),
+              box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);
+  cursor: default;
+}
+.card-hover:hover {
+  transform: translateY(-5px) scale(1.02) !important;
+  box-shadow:
+    0 0 0 1.5px rgba(74, 222, 128, 0.32),
+    0 0 22px    rgba(74, 222, 128, 0.22),
+    0 0 55px    rgba(74, 222, 128, 0.10),
+    inset 0 1px 1px rgba(255,255,255,0.2) !important;
+}
+
+/* ── Signal chain steps — lift higher ───────────────────────── */
+.signal-step {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: default;
+}
+.signal-step:hover {
+  transform: translateY(-8px) !important;
+  box-shadow:
+    0 0 0 1.5px rgba(74, 222, 128, 0.40),
+    0 0 28px    rgba(74, 222, 128, 0.28),
+    0 0 70px    rgba(74, 222, 128, 0.14),
+    inset 0 1px 1px rgba(255,255,255,0.2) !important;
+}
+
+/* ── Brain wave bars ─────────────────────────────────────────── */
+.wave-bar {
+  transition: box-shadow 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+  cursor: default;
+}
+.wave-bar:hover {
+  box-shadow: 0 0 22px rgba(74,222,128,0.30), 0 0 8px rgba(74,222,128,0.20) !important;
+  filter: brightness(1.8) !important;
+  transform: scaleY(1.15) !important;
+}
+
+/* ── Bullet row ──────────────────────────────────────────────── */
+.bullet-row {
+  transition: background 0.2s ease, padding-left 0.22s ease, box-shadow 0.2s ease;
+  border-radius: 0.5rem;
+  cursor: default;
+}
+.bullet-row:hover {
+  background: rgba(74,222,128,0.07) !important;
+  padding-left: 1rem !important;
+  box-shadow: inset 3px 0 0 rgba(74,222,128,0.55) !important;
+}
+
+/* ── Timeline item slide ─────────────────────────────────────── */
+.timeline-item {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border-radius: 0.5rem;
+  cursor: default;
+}
+.timeline-item:hover {
+  transform: translateX(6px) !important;
+  box-shadow: inset 3px 0 0 rgba(74,222,128,0.50) !important;
+}
+
+/* ── Shimmer sweep overlay ───────────────────────────────────── */
+.shimmer-hover {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-hover::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 50%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(74,222,128,0.10) 40%,
+    rgba(74,222,128,0.16) 50%,
+    rgba(74,222,128,0.10) 60%,
+    transparent 100%);
+  pointer-events: none;
+  left: -70%;
+  transition: none;
+  border-radius: inherit;
+}
+.shimmer-hover:hover::after {
+  animation: shimmerSweep 0.7s ease forwards;
+}
+
+/* ── Stat card scale ─────────────────────────────────────────── */
+.stat-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+.stat-card:hover {
+  transform: scale(1.06) !important;
+  box-shadow:
+    0 0 0 1.5px rgba(74,222,128,0.35),
+    0 0 30px    rgba(74,222,128,0.25),
+    0 0 65px    rgba(74,222,128,0.12) !important;
+}
