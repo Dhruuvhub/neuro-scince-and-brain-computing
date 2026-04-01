@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback, ReactNode, CSSProperties } from 'react';
 import gsap from 'gsap';
+
 import { FlipCard } from './FlipCard';
 import {
   NEURO_STATS, BRAIN_REGIONS, ACTION_POTENTIAL_STEPS, BRAIN_WAVES,
@@ -211,8 +212,13 @@ const CARD_H = '180px'; // fixed height for all flip card cells
 const TOTAL = 12;
 
 export default function StoryboardPresentation() {
-  const wrap  = useRef<HTMLDivElement>(null);
+  const wrap      = useRef<HTMLDivElement>(null);
+  const starsRef  = useRef<HTMLDivElement>(null);
+  const sunRef    = useRef<HTMLDivElement>(null);
+  const introRef  = useRef<HTMLDivElement>(null);
+  const labelsRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [introVisible, setIntroVisible] = useState(true);
 
   const goTo = useCallback((i: number) => {
     wrap.current?.scrollTo({ top: i * window.innerHeight, behavior: 'smooth' });
@@ -256,13 +262,155 @@ export default function StoryboardPresentation() {
     return () => obs.disconnect();
   }, []);
 
+  /* ── CINEMATIC INTRO — iris mask expanding from Earth's position ── */
+  useEffect(() => {
+    const intro  = introRef.current;
+    const stars  = starsRef.current;
+    const sun    = sunRef.current;
+    const labels = labelsRef.current;
+    if (!intro || !stars || !sun || !labels) return;
+
+    // ── How it works ────────────────────────────────────────────────
+    // The intro overlay sits at z:50 (above EVERYTHING).
+    // The video is always at full resolution at z:0 beneath it.
+    // We punch a growing hole in the intro overlay using CSS mask:
+    //   radial-gradient(circle at 50% 56%, transparent 0%, black 0%)
+    // Animating the hole radius from 0% → 150% reveals the globe
+    // from a tiny dot at the Earth screen-position to full screen.
+    // ── No video scaling needed at all. ─────────────────────────────
+
+    const EX = '50%'; // Earth X in screen (horizontal center)
+    const EY = '56%'; // Earth Y in screen (slightly below vertical center)
+
+    const applyMask = (pct: number) => {
+      const edge = pct + 0.8;
+      const grad = `radial-gradient(circle at ${EX} ${EY}, transparent ${pct}%, rgba(0,3,1,1) ${edge}%)`;
+      intro.style.webkitMask = grad;
+      intro.style.mask = grad;
+    };
+
+    // Start: hole = 0 (overlay fully covers everything — deep space visible)
+    applyMask(0);
+    gsap.set(stars,  { opacity: 1 });
+    gsap.set(sun,    { opacity: 1 });
+    gsap.set(labels, { opacity: 1 });
+    gsap.set(intro,  { opacity: 1 });
+
+    const prog = { val: 0 };
+    const tl = gsap.timeline({ onComplete: () => setIntroVisible(false) });
+
+    tl
+      // Phase 1 (0–1.5s): Hold on deep space — no hole yet, just stars + sun
+      .to(prog, { val: 0, duration: 1.5 }, 0)
+
+      // Phase 2 (1.5–3.2s): Iris opens slowly — tiny Earth becomes a growing circle
+      .to(prog, {
+        val: 18,
+        duration: 1.7,
+        ease: 'power2.in',
+        onUpdate: () => applyMask(prog.val),
+      }, 1.5)
+      // Labels + stars fade as we approach
+      .to(labels, { opacity: 0, duration: 0.8, ease: 'power1.in' }, 2.0)
+      .to(stars,  { opacity: 0, duration: 1.0, ease: 'power2.in' }, 2.2)
+      .to(sun,    { opacity: 0, duration: 0.9, ease: 'power1.in' }, 2.4)
+
+      // Phase 3 (3.2–4.5s): Rush into Earth — hole opens with expo acceleration
+      .to(prog, {
+        val: 155,
+        duration: 1.3,
+        ease: 'expo.in',
+        onUpdate: () => applyMask(prog.val),
+      }, 3.2)
+
+      // Phase 4 (4.5s): Fade out the now-transparent overlay entirely
+      .to(intro, { opacity: 0, duration: 0.3, ease: 'power1.in' }, 4.5);
+
+    return () => { tl.kill(); };
+  }, []);
+
   return (
     <>
-      {/* VIDEO BG */}
-      <video style={{ position:'fixed', inset:0, width:'100%', height:'100%', objectFit:'cover', zIndex:0 }}
+      {/* VIDEO BG — always full-scale, always visible below intro overlay */}
+      <video
+        style={{ position:'fixed', inset:0, width:'100%', height:'100%', objectFit:'cover', zIndex:0 }}
         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260315_073750_51473149-4350-4920-ae24-c8214286f323.mp4"
         autoPlay loop muted playsInline />
+
+      {/* Permanent dark overlay — static, no animation */}
       <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.62)', zIndex:1 }} />
+
+      {/* ── CINEMATIC INTRO — z:50, above all slides & UI ───────────── */}
+      {introVisible && (
+        <div
+          ref={introRef}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 50, pointerEvents: 'none',
+            // Dark deep-space background — hole in mask reveals the globe video below
+            background: 'radial-gradient(ellipse at 50% 56%, rgba(2,18,10,0.85) 0%, rgba(0,3,2,0.97) 40%, rgba(0,0,0,1) 100%)',
+          }}
+        >
+          {/* Star field */}
+          <div ref={starsRef} style={{ position:'absolute', inset:0, overflow:'hidden' }}>
+            {Array.from({length:200}).map((_,i) => {
+              const x   = `${Math.random()*100}%`;
+              const y   = `${Math.random()*100}%`;
+              const s   = Math.random()*2+0.4;
+              const op  = (Math.random()*0.6+0.3).toFixed(2);
+              const dur = (Math.random()*3+2).toFixed(1);
+              const del = (Math.random()*5).toFixed(1);
+              return (
+                <div key={i} style={{
+                  position:'absolute', left:x, top:y,
+                  width:`${s}px`, height:`${s}px`,
+                  borderRadius:'50%',
+                  background:`rgba(255,255,255,${op})`,
+                  animation:`starTwinkle ${dur}s ${del}s ease-in-out infinite alternate`,
+                }} />
+              );
+            })}
+          </div>
+
+          {/* Distant sun glow — top right */}
+          <div ref={sunRef} style={{
+            position:'absolute', top:'-6%', right:'-4%',
+            width:'45vw', height:'45vw', borderRadius:'50%',
+            background:'radial-gradient(circle, rgba(255,210,70,0.6) 0%, rgba(255,140,20,0.28) 35%, transparent 70%)',
+            filter:'blur(55px)', pointerEvents:'none',
+          }} />
+
+          {/* Labels */}
+          <div ref={labelsRef} style={{ position:'absolute', inset:0, pointerEvents:'none' }}>
+            <div style={{
+              position:'absolute', top:'11%', left:'50%', transform:'translateX(-50%)',
+              fontFamily:'var(--font-jetbrains), monospace',
+              fontSize:'0.55rem', letterSpacing:'0.42em',
+              textTransform:'uppercase', color:'rgba(255,255,255,0.28)',
+              whiteSpace:'nowrap',
+            }}>SOLAR SYSTEM · MILKY WAY</div>
+
+            <div style={{
+              position:'absolute', bottom:'13%', right:'7%',
+              fontFamily:'var(--font-jetbrains), monospace',
+              fontSize:'0.5rem', letterSpacing:'0.22em',
+              color:'rgba(255,255,255,0.16)', textAlign:'right', lineHeight:2.0,
+            }}>
+              <div>TARGET · EARTH</div>
+              <div style={{ color:'rgba(255,255,255,0.08)' }}>149.6 × 10⁶ km</div>
+            </div>
+
+            {/* Tiny Earth glow at the iris origin point */}
+            <div style={{
+              position:'absolute', left:'50%', top:'56%',
+              transform:'translate(-50%,-50%)',
+              width:'8px', height:'8px', borderRadius:'50%',
+              background:'rgba(80,200,120,0.90)',
+              boxShadow:'0 0 6px 3px rgba(80,200,120,0.5), 0 0 20px 8px rgba(80,200,120,0.2)',
+            }} />
+          </div>
+        </div>
+      )}
+
 
       {/* PROGRESS */}
       <div style={{ position:'fixed', top:0, left:0, right:0, height:'2px', background:'rgba(255,255,255,0.07)', zIndex:40 }}>
@@ -525,28 +673,43 @@ export default function StoryboardPresentation() {
         <section data-slide="7" style={BASE}>
           <div style={COL}>
             <div><Label text="07 — Modalities" /><H>BCI Types</H></div>
-            <div style={{ ...GRID_3, flex:1 }}>
+            <div style={{ ...GRID_3, flex:1, alignItems:'stretch' }}>
               {BCI_MODALITIES.map(({type,badge,examples},i)=>(
                 <div className="liquid-glass card-hover shimmer-hover" key={i} data-anim="up" data-delay={String(i*0.12)}
-                  style={{ borderRadius:'1.25rem', padding:'1.8rem', display:'flex', flexDirection:'column', gap:'0.85rem' }}>
-                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                    <div style={{ fontFamily:F, fontWeight:700, fontSize:'1.1rem', color:'#fff' }}>{type}</div>
-                    <span className="liquid-glass" style={{ borderRadius:'9999px', padding:'0.2rem 0.65rem',
-                      fontSize:'0.6rem', letterSpacing:'0.1em', color:'rgba(255,255,255,0.58)',
-                      textTransform:'uppercase', fontFamily:F }}>{badge}</span>
+                  style={{ borderRadius:'1.5rem', padding:'2.2rem 2rem', display:'flex', flexDirection:'column', gap:'0' }}>
+
+                  {/* Header */}
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'0.7rem' }}>
+                    <div style={{ fontFamily:F, fontWeight:800, fontSize:'1.55rem', color:'#fff', letterSpacing:'-0.03em', lineHeight:1.1 }}>{type}</div>
+                    <span className="liquid-glass" style={{ borderRadius:'9999px', padding:'0.3rem 0.85rem',
+                      fontSize:'0.68rem', letterSpacing:'0.12em', color:'rgba(255,255,255,0.65)',
+                      textTransform:'uppercase', fontFamily:F, fontWeight:600, flexShrink:0, marginTop:'0.2rem' }}>{badge}</span>
                   </div>
-                  {examples.map((ex,j)=>(
-                    <div key={j} style={{ display:'flex', alignItems:'center', gap:'0.7rem',
-                      fontFamily:F, fontSize:'0.88rem', color:'rgba(255,255,255,0.65)',
-                      padding:'0.35rem 0', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
-                      <span style={{ color:'rgba(255,255,255,0.25)' }}>›</span>{ex}
-                    </div>
-                  ))}
+
+                  {/* Divider */}
+                  <div style={{ height:'1px', background:'rgba(255,255,255,0.10)', marginBottom:'1.2rem' }} />
+
+                  {/* Examples — stretched to fill remaining height */}
+                  <div style={{ display:'flex', flexDirection:'column', flex:1, justifyContent:'space-between' }}>
+                    {examples.map((ex,j)=>(
+                      <div key={j} style={{ display:'flex', alignItems:'center', gap:'0.9rem',
+                        fontFamily:F, fontSize:'1.05rem', color:'rgba(255,255,255,0.75)',
+                        padding:'0.75rem 0', borderBottom: j < examples.length-1 ? '1px solid rgba(255,255,255,0.07)' : 'none',
+                        lineHeight:1.4 }}>
+                        <span style={{
+                          width:'6px', height:'6px', borderRadius:'50%',
+                          background:'rgba(74,222,128,0.55)', flexShrink:0,
+                        }} />
+                        {ex}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </section>
+
 
         {/* ══════ 09 APPLICATIONS ═══════════════════════════════════════════ */}
         <section data-slide="8" style={BASE}>
