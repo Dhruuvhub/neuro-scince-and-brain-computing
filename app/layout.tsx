@@ -16,8 +16,13 @@ const sourceSerif4 = Source_Serif_4({
 })
 
 export const metadata: Metadata = {
-  title: 'Bloom — AI-Powered Plant & Floral Design',
-  description: 'Innovating the spirit of bloom with AI. Discover generative botanical design, 3D plant structures, and artistic floral galleries.',
+  title: 'Neuroscience & Brain Computing — Synapse OS',
+  description: 'An interactive storyboard exploring Neuroscience, Action Potentials, Brain Waves, and Brain-Computer Interfaces. Built with Next.js and GSAP.',
+  openGraph: {
+    title: 'Neuroscience & Brain Computing — Synapse OS',
+    description: 'From neurons to neural engineering — an interactive class presentation.',
+    type: 'website',
+  },
 }
 
 export default function RootLayout({

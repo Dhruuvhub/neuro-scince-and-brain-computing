@@ -6,8 +6,8 @@ import gsap from 'gsap';
 import { FlipCard } from './FlipCard';
 import {
   NEURO_STATS, BRAIN_REGIONS, ACTION_POTENTIAL_STEPS, BRAIN_WAVES,
-  BCI_TIMELINE, SIGNAL_CHAIN, BCI_MODALITIES, APPLICATIONS,
-  INDUSTRY_LEADERS, ETHICS, BCI_FUTURE, TAKEAWAYS,
+  IMAGING_TIMELINE, IMAGING_SIGNAL_CHAIN, IMAGING_MODALITIES, IMAGING_APPLICATIONS,
+  LANDMARK_DISCOVERIES, IMAGING_CHALLENGES, IMAGING_FUTURE, TAKEAWAYS,
 } from './slideData';
 
 // ─── TOKENS ─────────────────────────────────────────────────────────────────
@@ -448,12 +448,11 @@ export default function StoryboardPresentation() {
               fontSize:'clamp(3rem,7vw,6rem)', letterSpacing:'-0.055em', color:'#fff',
               lineHeight:1.03, marginBottom:'1.2rem', maxWidth:'820px', textAlign:'center' }}>
               Neuroscience &amp;<br />
-              <em style={{ fontFamily:FS, fontStyle:'italic', color:'rgba(255,255,255,0.68)' }}>Brain‑Computer</em>{' '}
-              Interfaces
+              <em style={{ fontFamily:FS, fontStyle:'italic', color:'rgba(255,255,255,0.68)' }}>Brain&nbsp;Imaging</em>
             </h1>
             <p data-anim="up" data-delay="0.18" style={{ fontFamily:F, fontSize:'1.15rem',
               color:'rgba(255,255,255,0.45)', marginBottom:'3rem' }}>
-              From neurons to neural engineering
+              Seeing the living brain — structure, function &amp; beyond
             </p>
             <button data-anim="up" data-delay="0.30" onClick={()=>goTo(1)} className="liquid-glass float"
               style={{ borderRadius: '9999px', padding: '0.7rem 2rem', color: 'rgba(255,255,255,0.75)',
@@ -587,35 +586,35 @@ export default function StoryboardPresentation() {
             <div className="liquid-glass" style={{ borderRadius:'1.25rem', padding:'1rem 1.5rem' }}>
               <p data-anim="up" style={{ fontFamily:F, fontSize:'0.85rem', textAlign:'center',
                 color:'rgba(255,255,255,0.5)', letterSpacing:'-0.01em' }}>
-                EEG records oscillations via scalp electrodes — primary non-invasive BCI modality
+                EEG records brain oscillations non-invasively — each wave pattern reflects a distinct cognitive state
               </p>
             </div>
           </div>
         </section>
 
-        {/* ══════ 06 INTRO TO BCI ═══════════════════════════════════════════ */}
+        {/* ══════ 06 INTRO TO BRAIN IMAGING ══════════════════════════════════ */}
         <section data-slide="5" style={BASE}>
           <div style={SPLIT}>
             <div style={{ flex:1 }}>
-              <Label text="05 — BCI Basics" />
-              <H>Brain-Computer<br />Interfaces</H>
-              <Bullet delay={0.00}>Direct brain ↔ machine link</Bullet>
-              <Bullet delay={0.06}>Bypasses the neuromuscular pathway</Bullet>
-              <Bullet delay={0.12}>Real-time neural signal decoding</Bullet>
-              <Bullet delay={0.18}>Controls cursors, prosthetics & speech</Bullet>
+              <Label text="05 — Neuroimaging" />
+              <H>Introduction to<br />Brain Imaging</H>
+              <Bullet delay={0.00}>Non-invasive window into the living brain</Bullet>
+              <Bullet delay={0.06}>Structural vs. functional imaging</Bullet>
+              <Bullet delay={0.12}>Spatial vs. temporal resolution trade-offs</Bullet>
+              <Bullet delay={0.18}>From X-rays to fMRI in under 100 years</Bullet>
               <div className="liquid-glass-strong" style={{ borderRadius:'1rem', padding:'1.1rem 1.4rem', marginTop:'1.6rem' }}>
                 <div data-anim="up" style={{ fontFamily:FS, fontStyle:'italic', fontSize:'1.1rem',
                   color:'rgba(255,255,255,0.7)', textAlign:'center', lineHeight:1.4 }}>
-                  &ldquo;What if you could control the world — through thought alone?&rdquo;
+                  &ldquo;If the brain were simple enough to understand, we would be too simple to understand it.&rdquo;
                 </div>
               </div>
             </div>
             <div style={{ flex:1 }}>
               <div data-anim="up" style={{ fontFamily:F, fontSize:'0.62rem', letterSpacing:'0.22em',
                 textTransform:'uppercase', color:'rgba(255,255,255,0.32)', marginBottom:'1.2rem' }}>
-                Timeline
+                A History of Imaging
               </div>
-              {BCI_TIMELINE.map(({year,event},i)=>(
+              {IMAGING_TIMELINE.map(({year,event},i)=>(
                 <div key={i} data-anim="right" data-delay={String(i*0.08)}
                   className="timeline-item"
                   style={{ display:'flex', gap:'1.2rem', paddingBottom:'1.1rem', borderRadius:'0.5rem', paddingLeft:'0.2rem' }}>
@@ -632,12 +631,12 @@ export default function StoryboardPresentation() {
           </div>
         </section>
 
-        {/* ══════ 07 SIGNAL CHAIN ═══════════════════════════════════════════ */}
+        {/* ══════ 07 HOW NEUROIMAGING WORKS ══════════════════════════════════ */}
         <section data-slide="6" style={BASE}>
           <div style={COL}>
-            <div><Label text="06 — Architecture" /><H>The Signal Chain</H></div>
+            <div><Label text="06 — How It Works" /><H>The Imaging Pipeline</H></div>
             <div style={{ display:'flex', alignItems:'stretch', gap:'0.6rem', height:'11rem' }}>
-              {SIGNAL_CHAIN.map(({step,label,sub},i)=>(
+              {IMAGING_SIGNAL_CHAIN.map(({step,label,sub},i)=>(
                 <div key={i} style={{ display:'flex', alignItems:'center', flex:1 }}>
                   <div className="liquid-glass signal-step shimmer-hover" style={{ flex:1, height:'100%', borderRadius:'1.25rem',
                     display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
@@ -658,7 +657,7 @@ export default function StoryboardPresentation() {
             </div>
             <div className="liquid-glass-strong" style={{ borderRadius:'1.25rem', padding:'1.5rem 2.5rem' }}>
               <div data-anim="up" style={{ display:'flex', justifyContent:'space-around' }}>
-                {[{value:'< 50 ms',label:'Latency'},{value:'> 95%',label:'Accuracy'},{value:'1024+',label:'Channels'}].map(({value,label})=>(
+                {[{value:'< 2 mm',label:'MRI Spatial Res.'},{value:'1 ms',label:'EEG Temporal Res.'},{value:'7+ T',label:'Max Field Strength'}].map(({value,label})=>(
                   <div key={label} style={{ textAlign:'center' }}>
                     <div style={{ fontFamily:F, fontSize:'clamp(1.4rem,2.5vw,2rem)', fontWeight:700, color:'#fff', letterSpacing:'-0.04em' }}>{value}</div>
                     <div style={{ fontFamily:F, fontSize:'0.68rem', fontWeight:600, color:'rgba(255,255,255,0.45)', letterSpacing:'0.1em', textTransform:'uppercase' }}>{label}</div>
@@ -669,12 +668,13 @@ export default function StoryboardPresentation() {
           </div>
         </section>
 
-        {/* ══════ 08 MODALITIES ═════════════════════════════════════════════ */}
+        {/* ══════ 08 IMAGING MODALITIES ══════════════════════════════════════ */}
         <section data-slide="7" style={BASE}>
           <div style={COL}>
-            <div><Label text="07 — Modalities" /><H>BCI Types</H></div>
+            <div><Label text="07 — Modalities" /><H>Imaging Types</H></div>
             <div style={{ ...GRID_3, flex:1, alignItems:'stretch' }}>
-              {BCI_MODALITIES.map(({type,badge,examples},i)=>(
+              {IMAGING_MODALITIES.map(({type,badge,examples},i)=>(
+
                 <div className="liquid-glass card-hover shimmer-hover" key={i} data-anim="up" data-delay={String(i*0.12)}
                   style={{ borderRadius:'1.5rem', padding:'2.2rem 2rem', display:'flex', flexDirection:'column', gap:'0' }}>
 
@@ -711,12 +711,12 @@ export default function StoryboardPresentation() {
         </section>
 
 
-        {/* ══════ 09 APPLICATIONS ═══════════════════════════════════════════ */}
+        {/* ══════ 09 CLINICAL APPLICATIONS ══════════════════════════════════ */}
         <section data-slide="8" style={BASE}>
           <div style={COL}>
-            <div><Label text="08 — Use Cases" /><H>Applications</H></div>
+            <div><Label text="08 — Use Cases" /><H>Clinical &amp; Research<br />Applications</H></div>
             <div style={{ ...GRID_3, flex:1 }}>
-              {APPLICATIONS.map(({icon,title,desc,back},i)=>(
+              {IMAGING_APPLICATIONS.map(({icon,title,desc,back},i)=>(
                 <div key={i} data-anim="scale" data-delay={String(i*0.08)}
                   style={{ height:CARD_H, position:'relative' }}>
                   <FlipCard
@@ -738,12 +738,12 @@ export default function StoryboardPresentation() {
           </div>
         </section>
 
-        {/* ══════ 10 INDUSTRY ═══════════════════════════════════════════════ */}
+        {/* ══════ 10 LANDMARK DISCOVERIES ════════════════════════════════════ */}
         <section data-slide="9" style={BASE}>
           <div style={COL}>
-            <div><Label text="09 — Industry" /><H>Who&apos;s Building It?</H></div>
+            <div><Label text="09 — Key Findings" /><H>Landmark Discoveries<br />via Brain Imaging</H></div>
             <div style={{ ...GRID_2, flex:1 }}>
-              {INDUSTRY_LEADERS.map(({co,tag,stat,desc,back},i)=>(
+              {LANDMARK_DISCOVERIES.map(({co,tag,stat,desc,back},i)=>(
                 <div key={i} data-anim="up" data-delay={String(i*0.1)}
                   style={{ position:'relative', minHeight:CARD_H }}>
                   <FlipCard
@@ -752,7 +752,7 @@ export default function StoryboardPresentation() {
                         position:'absolute', inset:0, borderRadius:'1.25rem',
                         display:'flex', flexDirection:'column', alignItems:'center',
                         justifyContent:'center', textAlign:'center', padding:'1.6rem', gap:'0.4rem' }}>
-                        <div style={{ fontFamily:F, fontWeight:700, fontSize:'1.2rem', color:'#fff', letterSpacing:'-0.03em' }}>{co}</div>
+                        <div style={{ fontFamily:F, fontWeight:700, fontSize:'1.05rem', color:'#fff', letterSpacing:'-0.03em' }}>{co}</div>
                         <div style={{ fontFamily:F, fontSize:'0.62rem', color:'rgba(255,255,255,0.32)' }}>{tag}</div>
                         <span className="liquid-glass" style={{ borderRadius:'9999px', padding:'0.28rem 0.8rem', marginTop:'0.4rem',
                           fontSize:'0.7rem', color:'rgba(255,255,255,0.65)', fontFamily:F, fontWeight:600 }}>{stat}</span>
@@ -767,12 +767,12 @@ export default function StoryboardPresentation() {
           </div>
         </section>
 
-        {/* ══════ 11 ETHICS ════════════════════════════════════════════════ */}
+        {/* ══════ 11 CHALLENGES & LIMITATIONS ════════════════════════════════ */}
         <section data-slide="10" style={BASE}>
           <div style={COL}>
-            <div><Label text="10 — Ethics" /><H>Ethical Frontiers</H></div>
+            <div><Label text="10 — Limitations" /><H>Challenges &amp;<br />Limitations</H></div>
             <div style={{ ...GRID_2, flex:1 }}>
-              {ETHICS.map(({icon,title,desc,back},i)=>(
+              {IMAGING_CHALLENGES.map(({icon,title,desc,back},i)=>(
                 <div key={i} data-anim="scale" data-delay={String(i*0.1)}
                   style={{ position:'relative', minHeight:CARD_H }}>
                   <FlipCard
@@ -794,13 +794,13 @@ export default function StoryboardPresentation() {
           </div>
         </section>
 
-        {/* ══════ 12 FUTURE & CONCLUSION ════════════════════════════════════ */}
+        {/* ══════ 12 FUTURE OF NEUROIMAGING & CONCLUSION ═════════════════════ */}
         <section data-slide="11" style={BASE}>
           <div style={{ ...SPLIT, alignItems:'stretch' }}>
             <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', gap:'1rem' }}>
-              <Label text="11 — The Road Ahead" />
-              <H size="sm">Future of BCI</H>
-              {BCI_FUTURE.map(({year,event,icon},i)=>(
+              <Label text="11 — What's Next" />
+              <H size="sm">Future of<br />Neuroimaging</H>
+              {IMAGING_FUTURE.map(({year,event,icon},i)=>(
                 <div className="liquid-glass card-hover shimmer-hover" key={i} style={{ borderRadius:'1.25rem', padding:'1rem 1.4rem' }}>
                   <div data-anim="left" data-delay={String(i*0.1)}
                     style={{ display:'flex', gap:'1rem', alignItems:'center' }}>
@@ -832,7 +832,7 @@ export default function StoryboardPresentation() {
                 <div data-anim="scale">
                   <div style={{ fontFamily:F, fontSize:'clamp(1.1rem,2vw,1.5rem)', fontWeight:500,
                     color:'#fff', letterSpacing:'-0.03em', marginBottom:'0.6rem' }}>
-                    &ldquo;The mind is the last frontier.&rdquo;
+                    &ldquo;To understand the brain is to understand ourselves.&rdquo;
                   </div>
                   <div style={{ fontFamily:F, fontSize:'0.65rem', letterSpacing:'0.2em',
                     textTransform:'uppercase', color:'rgba(255,255,255,0.32)' }}>
